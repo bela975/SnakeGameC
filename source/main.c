@@ -1,9 +1,3 @@
-/*
-Jogo da cobrinha em c
-desenvolvido por: Isabela Spinelli, Maria Julia Pessoa e Maria Luisa Arruda
-disciplina de programacao imperativa e funcional
-*/
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -22,7 +16,6 @@ typedef struct cobra {
     int rabo;
     int x;
     int y;
-    int LINHAS= 20, COLS= 20;
     int macaX, macaY;
     int indicador;
     int gameOver;
@@ -33,7 +26,21 @@ typedef struct cobra {
 
 void macas(){
 
-  gameOver = 0;
+    int X[1000];
+    int Y[1000];
+    int cabeca;
+    int rabo;
+    int x;
+    int y;
+    int macaX, macaY;
+    int indicador;
+    int pontos;
+
+
+int LINHAS=20, COLS= 20;
+int i, j;
+
+int gameOver = 0;
  
        while(gameOver == 0) {
             x = LINHAS/2;
@@ -50,15 +57,31 @@ void macas(){
 
            }
          }
-         return 0;
        }
 
 void limiteTela(){
+int X[1000];
+    int Y[1000];
+    int cabeca;
+    int rabo;
+    int x;
+    int y;
+    int macaX, macaY;
+    int indicador;
+    int pontos;
+
+
+int LINHAS=20, COLS= 20;
+int i, j;
+
+int gameOver = 0;
+
+
 //limpando o terminal
 system("cls");
-for (i = 0; i < COLUNAS ; i++) {
+for (i = 0; i < COLS ; i++) {
 for (j = 0; j < LINHAS ; j++) {
-if (i == 0 || i == LINHAS - 1  || j == 0 || j == COLUNAS - 1) {
+if (i == 0 || i == LINHAS - 1  || j == 0 || j == COLS - 1) {
 printf("H");
 } else {
           if (i == x && j == y){
@@ -96,9 +119,9 @@ break;
 case 'w':
 indicador = 4;
 break;
-}
+
 case 'x':
-gameover = 1;
+gameOver = 1;
 break;
 }
 }
@@ -106,6 +129,19 @@ break;
        
 
 void movimentoCobra()
+
+int X[1000];
+int Y[1000];
+int cabeca;
+int rabo;
+int x;
+int y;
+int macaX, macaY;
+int indicador;
+int pontos;
+
+
+
 {
 
 switch (indicador) {
@@ -151,6 +187,24 @@ pontos += 10;
  
 int main()
 {
+    int X[1000];
+    int Y[1000];
+    int cabeca;
+    int rabo;
+    int x;
+    int y;
+    int macaX, macaY;
+    int indicador;
+    int pontos;
+
+
+int LINHAS=20, COLS= 20;
+int i, j;
+
+
+int gameOver = 0;
+
+
 int m, n;
 
 // gerando as bordas
@@ -167,4 +221,5 @@ logic();
 printf("jogo finalizado! deseja jogar novamente?");
 printf("caso queira digite 1");
 scanf("%d", &gameOver);
+return 0;
 }
