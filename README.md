@@ -1,19 +1,19 @@
-SnakeGame em C
+#SnakeGame em C
 
 Este repositório contém o clássico jogo da cobrinha desenvolvido utilizando a linguagem de 
 programação C para uma disciplina na universidade Cesar School.
 
 
 --------------------------------------------------------------------------------------------
- # Colaboradores 
+ ## Colaboradores 
 
 Isabela Spinelli  (bela975 on github) <br/>
 Maria Julia Pessoa (mariajuliapessoa on github) <br/>
 Maria Luisa Arruda (maluArr on github) 
 
 -------------------------------------------------------------------------------------------
-# Bibliotecas utilizadas
-## CLI-LIB
+## Bibliotecas utilizadas
+### CLI-LIB
 cli-lib : https://github.com/tgfb/cli-lib/blob/main/README.md
 
 Cli-lib é uma biblioteca desenvolvida para a realização de aplicações e jogos em C, e com ela,
@@ -24,14 +24,14 @@ Para utilizá-la, só precisamos pegar os arquivos de código-fonte (source) e c
 neste repositório pelo nosso próprio.
 
 ------------------------------------------------------------------------------------------
-# Requisitos
+## Requisitos
 A biblioteca cli-lib funciona nos seguintes sistemas operacionais: <br/>
       Baseados em Linux (Ubuntu, etc)<br/>
       MacOS<br/>
 Portanto, é necessário ter o GCC instalado para poder desenvolver o jogo.
 
 -------------------------------------------------------------------------------------------
-# Como executar e compilar nosso jogo? 
+## Como executar e compilar nosso jogo? 
 É preciso estar no sistema operacional Linux!
 Nosso jogo foi feito no terminal do linux. Por isso, para compilá-lo é necessário instalar
 o GCC.
@@ -41,13 +41,13 @@ Para construir a interface do nosso jogo e pegar os inputs dos periféricos dos 
 contamos  com o auxílio das biblioteca cli-lib.
 
 -------------------------------------------------------------------------------------------
-# Como instalar a biblioteca cli-lib?
+## Como instalar a biblioteca cli-lib?
 Para utilizá-la, é necessário somente pegar os source e o header file desse repositório 
 e juntar ao nosso programa, trocando a main desse repositório pela nossa main.
 
 --------------------------------------------------------------------------------------------
 
-# Executando o jogo:
+## Executando o jogo:
 
 1.  para isso, é necessário abrir o terminal, e dar o comando
 “ls” para visualizar todas as pastas do seu computador. 
