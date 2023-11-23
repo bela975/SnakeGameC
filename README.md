@@ -1,4 +1,4 @@
-#SnakeGame em C
+# SnakeGame em C
 
 Este repositório contém o clássico jogo da cobrinha desenvolvido utilizando a linguagem de 
 programação C para uma disciplina na universidade Cesar School.
