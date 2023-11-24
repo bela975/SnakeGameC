@@ -13,6 +13,7 @@ disciplina de programacao imperativa e funcional
 #include "keyboard.h"
 #include "timer.h"
 #include <termios.h>
+#include <string.h>
 
  
 
@@ -20,19 +21,15 @@ disciplina de programacao imperativa e funcional
 #define LINHAS 20
 #define COLS 20
 
-typedef struct highscore{
-char *nomeJogador;
-float pontos;
-} Highscore;
 
-typedef struct Jogador{
-char *nomeJogador;
-float pontos;
-} Jogador;
+typedef struct jogador{
+    char nome[50];
+    int pontos;
+    struct jogador *next;
+}jogador;
+
 
 typedef struct Cobra {
-    int X;
-    int Y;
     int cabeca;
     int rabo;
     int x;
@@ -41,12 +38,50 @@ typedef struct Cobra {
     int indicador;
     int gameOver;
     int pontos;
-    Highscore highscore;
+    int dx, dy;
+    int* corpoCobra;
+    int tamanhoCobra;
+   
 } Cobra;
 
 //criando uma variavel global do tipo cobra para que os dados de Cobra sejam
 //acessados dentro de todas as funcoes
 Cobra cobra;  
+int pontos;
+
+
+void addJogador(jogador **head, char *nome, int pontos){
+    jogador* novoNo = (jogador*)malloc(sizeof(jogador));
+    strcpy(novoNo ->nome, nome);
+    novoNo ->pontos = pontos;
+    if(*head == NULL){
+      *head = novoNo;
+      novoNo -> next=NULL;
+     
+    }else if((*head)->pontos < novoNo->pontos){
+      novoNo->next = *head;
+      *head = novoNo;
+    }
+    else{
+      jogador *jogadorAtual = *head;
+      while(jogadorAtual ->next ->pontos > jogadorAtual->pontos){
+        jogadorAtual = jogadorAtual ->next;
+      }
+    novoNo ->next = jogadorAtual->next;
+    jogadorAtual->next = novoNo;
+    }
+   
+}
+   
+void mostrarHighscore(jogador *lista){
+    printf("Highscores:\n");
+    while (lista != NULL) {
+        printf("%s: %d\n", lista->nome, lista->pontos);
+        lista = lista->next;
+    }
+}
+
+
 
 void printTitulo(int nextX, int nextY)
 {
@@ -80,22 +115,6 @@ int gameOver = 0;
          }
        }
 
-int mensagemInferior(){
-
-int gameOver = 0;
-int i, j;
-
-//limpando o terminal
-system("cls");
-
-
-printf("Pontuacao obtida:%d\n", cobra.pontos);
-printf("\n");
-printf("aperte X para terminar o jogo");
-return 0;
-}
-
- 
 // Funcao para identificar se uma tecla foi pressionada e qal foi pressionada
 void inputJogador(){
 if (keyhit()) {
@@ -119,12 +138,49 @@ break;
 }
     }
 }
+
+//criando uma funcao que permite exibir as partes da cobra e as frutas
+
+void itensJogo(){
+int i, j;
+screenGotoxy(1, 1);  
+printf("\033[?25l"); //escondendo cursor quando o jogo estiver ativo para que ele n'ao atrapalhe a jogabilidade
+
+//criando um array de alocacao dinamica de espacos de memoria e inserindo nele o x e y da posicao da cobra
+cobra.corpoCobra = malloc(sizeof(int) * 2 * (LINHAS * COLS));
+cobra.corpoCobra[0] = cobra.x;                                      
+    cobra.corpoCobra[1] = cobra.y;  
+
+if(i == cobra.macaX && j == cobra.macaY){
+printf("🍎");
+}else if (i == cobra.x && j == cobra.y) {
+                    printf("O");
+            } else {
+                int corpo = 0;
+                for (int k = 1; k < cobra.tamanhoCobra; k++) {
+                    if (i == cobra.corpoCobra[2 * k] && j == cobra.corpoCobra[2 * k + 1]) {
+                        printf("0");
+                        corpo = 1;
+                        break;
+                     }
+               }
+            //onde a cobra nao tiver, printa espaco vazio
+                 if (!corpo) {
+                   printf(" ");
+                 }
+                  printf("\n");
+            }
+
+}      
+       
+       
+       
        
 void movimentoCobra()
 
 {
 
-switch (cobra.indicador) {
+     switch (cobra.indicador) {
 case 1:
 cobra.y--;
 break;
@@ -160,8 +216,10 @@ cobra.macaY = rand() % 20;
 if (cobra.macaY == 0)
 goto macay;
 //adicionando pontos correspondentes a maca que foi devorada
-cobra.highscore.pontos += 10;
+pontos += 10;
 }
+
+
 screenUpdate();
 }
 
@@ -187,15 +245,23 @@ void printKey(int ch)
  
 int main()
 {
-
+jogador* head = NULL;
 static int ch = 0;
 int gameOver = 0;
 int escolhaUsuario;
 int var = 0;
+char username[50];
+
 
 
 screenInit(1);
         keyboardInit();
+       
+        addJogador(&head, "Rodrigu", 3);
+addJogador(&head, "dri", 10);
+addJogador(&head, "igu", 8);
+addJogador(&head, "R", 45678);
+       
        
         printTitulo(cobra.x, cobra.y);
         screenUpdate();
@@ -209,7 +275,13 @@ printf("\n aperte 3 para: VER CREDITOS\n");
 printf("\n aperte 4 para: SAIR\n");
 scanf("%d", &escolhaUsuario);
 
+printf("\n\n\n insira seu username:\n");
+        scanf("%s", username);
+        pontos = 0;
+
+
         if(escolhaUsuario == 1){
+       
         screenInit(1);
         keyboardInit();
         //setando o loop de execucao do jogo
@@ -219,9 +291,15 @@ scanf("%d", &escolhaUsuario);
 macas();
 screenUpdate();
 movimentoCobra();
+itensJogo();
+
         }
+        addJogador(&head,username,pontos);
+
 }else if(escolhaUsuario == 2){
-                 //exibirhighscore
+                 
+mostrarHighscore(head);
+
                  }else if(escolhaUsuario == 3){
                  
                   char *var1 = "Papa-maca\n";
@@ -248,6 +326,7 @@ screenClear();
   gameOver = 1;
   printf("jogo finalizado! aperte 0 para retornar ao menu principal");
         scanf("%d", &gameOver);
+       
          
        }else{
            printf("O numero inserido n'ao corresponde a nenhum comando :(");
@@ -255,21 +334,6 @@ screenClear();
        }
 
 
-
-//setando a cor da mensagem da var 1 e do fundo
-printf("\n\n\n\n\n ");
-screenSetColor(MAGENTA,BLACK);
-printf("%s",var1);
-printf("\n\n ");
-printf(" %c\n\n ", 169);
-printf("%s",var2);
-printf("\n\n ");
-printf(" %c\n\n ", 169);
-printf("%s",var3);
-printf("\n\n ");
-printf(" %c\n\n ", 169);
-readch();
-screenClear();
 
 
 if (var == 0) {
@@ -287,77 +351,15 @@ screenClear();
 
 var += -1;
 
+while(head != NULL){
+jogador *temp = head;
+head = head ->next;
+
+free(temp);
+}
 
        }
       keyboardDestroy();
          screenDestroy();
-     
-      }
-     
-   
-
-
-
-
-/*
-switch (var) {
-case 1:
-
-screenGotoxy(23, 15);
-
-printf("Digite seu nome: ");
-
-scanf("%s", cobra.highscore.nomeJogador);
-
-screenGotoxy(1, 1);
-
-screenSetColor(MAGENTA, BLACK);
-
-printf("Nome: %s SCORE: %lf pontos",cobra.highscore.nomeJogador, cobra.highscore.pontos);
-break;
-
-case 2:
-screenClear();
-screenGotoxy(16, 2);
-screenSetColor(MAGENTA, BLACK);
-printf(" ");
-screenGotoxy(16, 3);
-printf(" ");
-screenSetColor(MAGENTA, BLACK);
-printf(" ");
-screenGotoxy(16, 4);
-printf(" ");
-screenSetColor(MAGENTA, BLACK);
-printf(" HIGH SCORE ");
-screenSetColor(MAGENTA, BLACK);
-printf(" ");
-screenGotoxy(16, 5);
-printf(" ");
-screenSetColor(MAGENTA, BLACK);
-printf(" ");
-screenSetColor(MAGENTA, BLACK);
-printf(" ");
-screenGotoxy(16, 6);
-printf(" ");
-screenSetColor(MAGENTA, BLACK);
-printf("\n ");
-printf("\n\n NOME: %s Pontos: %.2f", cobra.highscore.nomeJogador, cobra.highscore.pontos);
-readch();
-break;
-
-case 3:
-printf("\n\n\n\n\n\n\n ");
-printf("%s",cred1);
-printf("\n\n ");
-printf("\n\n\n\n\n\n\n ");
-printf("%s", cred2);
-printf("\n\n ");
-printf("\n\n\n\n\n\n\n ");
-readch();
-break;
-
-case 4:
-exit(0);
-break;
-}
-*/  
+      return 0 ;
+    }
