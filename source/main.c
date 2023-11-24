@@ -1,3 +1,10 @@
+/*Jogo da cobrinha em c
+desenvolvido por: Isabela Spinelli, Maria Julia Pessoa e Maria Luisa Arruda
+disciplina de programacao imperativa e funcional
+*/
+
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -5,12 +12,11 @@
 #include "screen.h"
 #include "keyboard.h"
 #include "timer.h"
-#include <termios.h>
+#include "timer.c"
+#include "screen.c"
+#include "keyboard.c"
 
-#define LINHAS 20
-#define COLS 20
-
-typedef struct Cobra {
+typedef struct cobra {
     int X[1000];
     int Y[1000];
     int cabeca;
@@ -21,202 +27,232 @@ typedef struct Cobra {
     int indicador;
     int gameOver;
     int pontos;
+    int dx, dy;
+    int* corpoCobra;
+    int tamanhoCobra;
+   
 } Cobra;
 
-//criando uma variavel global do tipo cobra para que os dados de Cobra sejam
-//acessados dentro de todas as funcoes
-Cobra cobra;  
 
-void printHello(int nextX, int nextY)
-{
-    screenSetColor(CYAN, DARKGRAY);
-    screenGotoxy(cobra.x, cobra.y);
-    printf("           ");
-    cobra.x = nextX;
-    cobra.y = nextY;
-    screenGotoxy(cobra.x, cobra.y);
-    printf("Hello World");
-}
 
 void macas(){
 
 int gameOver = 0;
-
-    if(gameOver == 0) {
-        cobra.x = LINHAS/2;
-        cobra.y = COLS/2;
+ 
+       while(gameOver == 0) {
+            x = LINHAS/2;
+            y = COLS/2;
            
   //criando uma nova maca de forma aleatoria dentro das linhas e colunas (20 ambas)
-        if(cobra.macaX == 0) {
-            cobra.macaX = rand() % 20;
-        }
+ if(macaX == 0) {
+
+  macaX = rand() % 20;
+ }
  
-       if(cobra.macaX == 0) {
-          cobra.macaY = rand() % 20;
+  if(macaX == 0) {
+  macaY = rand() % 20;
 
         }
     }
 }
 
-int limiteTela(){
-    
-    int gameOver = 0;
-    int i, j;
-    
-    //limpando o terminal
-    system("cls");
-    for (i = 0; i < COLS ; i++) {
-        for (j = 0; j < LINHAS ; j++) {
-            if (i == 0 || i == LINHAS - 1  || j == 0 || j == COLS - 1) {
-                printf("H");
-            } else {
-              if (i == cobra.x && j == cobra.y){
-                printf("?");
-                } else if (i == cobra.macaX && j == cobra.macaY){
-                    printf("*");
-                }else{
-                    printf(" ");
+void limiteTela(){
+int X[1000];
+    int Y[1000];
+    int cabeca;
+    int rabo;
+    int x;
+    int y;
+    int macaX, macaY;
+    int indicador;
+    int pontos;
+
+
+int LINHAS=20, COLS= 20;
+int i, j;
+
+int gameOver = 0;
+
+
+//limpando o terminal
+system("cls");
+for (i = 0; i < COLS ; i++) {
+for (j = 0; j < LINHAS ; j++) {
+if (i == 0 || i == LINHAS - 1  || j == 0 || j == COLS - 1) {
+printf("H");
+} else {
+          if (i == x && j == y){
+printf("?");
+                   }
+                   else if (i == macaX && j == macaY){
+                        printf("*");
+                   }
+                   else{
+                   printf(" ");
+                   }
                 }
-            }
-            printf("\n");
-        }
-    }
-    printf("Pontuacao obtida:%d\n", cobra.pontos);
-    printf("\n");
-    printf("aperte X para terminar o jogo");
-    return 0;
+                printf("\n");
+              }
+             }
+printf("Pontuacao obtida:%d\n", pontos);
+printf("\n");
+printf("aperte X para terminar o jogo");
+return 0;
 }
  
-// Funcao para identificar se uma tecla foi pressionada e qal foi pressionada
-void inputJogador(){
-    if (keyhit()) {
-        switch (readch()) {
-            case 'a':
-                cobra.indicador = 1;
-                break;
-            case 's':
-                cobra.indicador = 2;
-                break;
-            case 'd':
-                cobra.indicador = 3;
-                break;
-            case 'w':
-                cobra.indicador = 4;
-                break;
-            
-            case 'x':
-                cobra.gameOver = 1;
-                break;
-        }
-    }
+        // Function to take the input
+        void inputJogador(){
+if (peekcharacter()) {
+switch (readch()) {
+case 'a':
+indicador = 1;
+break;
+case 's':
+indicador = 2;
+break;
+case 'd':
+indicador = 3;
+break;
+case 'w':
+indicador = 4;
+break;
+
+case 'x':
+gameOver = 1;
+break;
 }
+}
+}
+
+//criando uma funcao que permite exibir as partes da cobra e as frutas
+
+void itensJogo(){
+int i, j;
+screenGotoxy(1, 1);  
+printf("\033[?25l"); //escondendo cursor quando o jogo estiver ativo para que ele n'ao atrapalhe a jogabilidade
+
+//criando um array de alocacao dinamica de espacos de memoria e inserindo nele o x e y da posicao da cobra
+cobra.corpoCobra = malloc(sizeof(int) * 2 * (LINHAS * COLS));
+cobra.corpoCobra[0] = cobra.x;                                      
+    cobra.corpoCobra[1] = cobra.y;  
+
+if(i == cobra.macaX && j == cobra.macaY){
+printf("🍎");
+}else if (i == cobra.x && j == cobra.y) {
+                    printf("O");
+            } else {
+                int corpo = 0;
+                for (int k = 1; k < cobra.tamanhoCobra; k++) {
+                    if (i == cobra.corpoCobra[2 * k] && j == cobra.corpoCobra[2 * k + 1]) {
+                        printf("0");
+                        corpo = 1;
+                        break;
+                     }
+               }
+            //onde a cobra nao tiver, printa espaco vazio
+                 if (!corpo) {
+                   printf(" ");
+                 }
+                  printf("\n");
+            }
+
+}      
+       
+       
        
 
-void movimentoCobra(){
+void movimentoCobra()
 
-    switch (cobra.indicador) {
-        case 1:
-            cobra.y--;
-            break;
-        case 2:
-            cobra.x++;
-            break;
-        case 3:
-            cobra.y++;
-            break;
-        case 4:
-            cobra.x--;
-            break;
-        default:
-            break;
-    }
+int X[1000];
+int Y[1000];
+int cabeca;
+int rabo;
+int x;
+int y;
+int macaX, macaY;
+int indicador;
+int pontos;
 
-    // checando se o jogo acabou
-    if (cobra.x < 0 || cobra.x > COLS || cobra.y < 0 || cobra.y > LINHAS)
-        cobra.gameOver = 1;
-    
-        //atualizando a pontuacao total
-        if (cobra.x == cobra.macaX && cobra.y == cobra.macaY) {
-        //aleatorizando novas macas
-            macax:
-            cobra.macaX = rand() % 20;
-            if (cobra.macaX == 0)
-                goto macax;
-        
-        //criando uma fruta nova assim que a maca de cima estiver zerada(consumida)
-            macay:
-            cobra.macaY = rand() % 20;
-            if (cobra.macaY == 0)
-                goto macay;
-        //adicionando pontos correspondentes a maca que foi devorada
-            cobra.pontos += 10;
-        }
-    screenUpdate();
+
+
+{
+
+switch (indicador) {
+case 1:
+y--;
+break;
+case 2:
+x++;
+break;
+case 3:
+y++;
+break;
+case 4:
+x--;
+break;
+default:
+break;
 }
 
-void printKey(int ch){
-    screenSetColor(YELLOW, DARKGRAY);
-    screenGotoxy(35, 22);
-    printf("Key code :");
+// checando se o jogo acabou
+if (x < 0 || x > COLS
+|| y < 0 || y > LINHA)
+gameover = 1;
 
-    screenGotoxy(34, 23);
-    printf("            ");
-   
-    if (ch == 27) 
-        screenGotoxy(36, 23);
-    else 
-        screenGotoxy(39, 23);
+//atualizando a pontuacao total
+if (x == macaX && y == macaY) {
+//aleatorizando novas macas
+macax:
+macaX = rand() % 20;
+if (macaX == 0)
+goto macax;
 
-    printf("%d ", ch);
-    while (keyhit()) {
-        printf("%d ", readch());
-    }
+//criando uma fruta nova assim que a maca de cima estiver zerada(consumida)
+macay:
+macaY = rand() % 20;
+if (macaY == 0)
+goto macay;
+//adicionando pontos correspondentes a maca que foi devorada
+pontos += 10;
+}
 }
 
  
-int main() {
+int main()
+{
+    int X[1000];
+    int Y[1000];
+    int cabeca;
+    int rabo;
+    int x;
+    int y;
+    int macaX, macaY;
+    int indicador;
+    int pontos;
 
-    static int ch = 0;
-    int gameOver = 0;
-    
-    screenInit(1);
-            keyboardInit();
-           
-             printHello(cobra.x, cobra.y);
-             screenUpdate();
-    
-           
-            while (ch != 10){//enter 
-            // Handle user input
-                if (keyhit()){
-                    ch = readch();
-                    printKey(ch);
-                    screenUpdate();
-                }
-    
-    int m, n;
-    
-    // gerando as bordas
-    limiteTela();
-    
-    // Until the game is over
-    while (cobra.gameOver = 0) {
-    
-        //chamando funcoes
-        macas();
-        screenUpdate();
-        limiteTela();
-        movimentoCobra();
-    }
-        
-    printf("jogo finalizado! deseja jogar novamente?");
-    printf("caso queira digite 1");
-    scanf("%d", &gameOver);
-    
-    
-    keyboardDestroy();
-    screenDestroy();
-    
-    return 0;
-    }
+
+int LINHAS=20, COLS= 20;
+int i, j;
+
+
+int gameOver = 0;
+
+
+int m, n;
+
+// gerando as bordas
+limiteTela();
+
+// Until the game is over
+while (gameover = 0) {
+
+//chamando funcoes
+draw();
+input();
+logic();
+}
+printf("jogo finalizado! deseja jogar novamente?");
+printf("caso queira digite 1");
+scanf("%d", &gameOver);
+return 0;
 }
