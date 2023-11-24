@@ -54,5 +54,7 @@ e juntar ao nosso programa, trocando a main desse repositório pela nossa main.
 
 2. em seguida é preciso dar cd e o nome da pasta do jogo em  seu computador. “cd Snakegame” por exemplo.
 
-3. após entrar nela, com o gcc instalado claro, é só inserir o comando “gcc -o main.c screen.c keyboard.c timer.c” e logo após essa execução inserir o comando  “./Snakegame” .
+3. após entrar nela, com o gcc instalado claro, é só inserir o comando “gcc -o Snakegame main.c screen.c keyboard.c timer.c” e logo após essa execução inserir o comando  “./Snakegame” .
 Pronto! O jogo já estará em execução.
+
+OBS: Infelizmente o jogo está com problemas, então para acessar as diferentes partes do nosso menu, é preciso inserir o numero correspondente e além disso, dar enter.
